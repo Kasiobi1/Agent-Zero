@@ -8,6 +8,7 @@ export type AgentAction =
   | { action: "STORE_MEMORY"; content: string }
   | { action: "RECALL_MEMORY"; query: string }
   | { action: "ANALYZE_MEMORIES"; query: string }
+  | { action: "CHAT"; message: string }
   | { action: "UNKNOWN"; raw: string };
 
 export async function parseIntent(userPrompt: string): Promise<AgentAction> {
@@ -30,13 +31,17 @@ The JSON must follow one of these schemas:
 3. Analyze memories:
 {"action": "ANALYZE_MEMORIES", "query": "<what to analyze or reason about>"}
 
-4. Unknown:
+4. Normal conversation:
+{"action": "CHAT", "message": "<the user's message>"}
+
+5. Unknown:
 {"action": "UNKNOWN", "raw": "<original message>"}
 
 Rules:
 - If the user says "remember", "save", "store", "note" → STORE_MEMORY
 - If the user asks "what", "who", "when", "recall", "do you know" → RECALL_MEMORY
 - If the user says "analyze", "summarize", "insights", "patterns", "suggest" → ANALYZE_MEMORIES
+- If the user is just chatting, asking questions, or having a conversation → CHAT
 - Return ONLY raw JSON. No backticks, no explanation.`,
       },
       {

@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { parseIntent } from "@/app/lib/intentParser";
 import { storeMemory, recallMemories, Memory } from "@/app/lib/storage";
 import { analyzeMemories } from "@/app/lib/compute";
+import Groq from "groq-sdk";
 
+const client = new Groq({ apiKey: process.env.GROQ_API_KEY! });
 const AGENT_ID = "agent-zero-001";
 
 export async function POST(req: NextRequest) {
@@ -79,11 +81,38 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    case "CHAT": {
+      const memories = await recallMemories(AGENT_ID);
+      const memoryContext = memories.length > 0
+        ? `\n\nContext from my memory:\n${memories.map((m) => m.content).join("\n")}`
+        : "";
+
+      const completion = await client.chat.completions.create({
+        model: "llama-3.3-70b-versatile",
+        messages: [
+          {
+            role: "system",
+            content: `You are AgentZero, a helpful AI agent with decentralized memory powered by 0G infrastructure.
+You are friendly, concise, and helpful. You remember things users tell you permanently on 0G Storage.${memoryContext}`,
+          },
+          {
+            role: "user",
+            content: intent.message,
+          },
+        ],
+      });
+
+      return NextResponse.json({
+        action: "CHAT",
+        message: completion.choices[0].message.content ?? "I'm not sure how to respond to that.",
+      });
+    }
+
     case "UNKNOWN":
     default:
       return NextResponse.json({
         action: "UNKNOWN",
-        message: "I'm not sure what you mean. Try telling me to remember something, or ask me what you've told me.",
+        message: "I'm not sure what you mean. Try telling me to remember something, ask what I know, or just chat with me!",
       });
   }
 }
