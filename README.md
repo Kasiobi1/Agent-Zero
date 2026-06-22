@@ -45,3 +45,15 @@ GROQ_API_KEY=your_groq_api_key_here
 1. Type: `Remember that I'm building a climate startup`
 2. Type: `What do you know about me?`
 3. Type: `Analyze my memories and give me insights`
+
+## Roadmap
+
+### Next Features
+- **Agentic ID (ERC-7857)** — Mint an on-chain identity for the agent. Every AgentZero instance becomes a tradeable, transferable Intelligent NFT. The agent's memory and intelligence move with the NFT when ownership changes.
+- **Wallet Connection** — Let users connect their own MetaMask wallet so they pay their own storage fees instead of a shared wallet.
+- **Persistent Memory Across Sessions** — Currently memories reset on server restart. Next step is querying 0G Storage directly by wallet address to load memories across sessions.
+- **Multi-user Support** — Each wallet address gets its own agent with isolated memory.
+- **0G Compute (Full Integration)** — Switch analysis fully to 0G Compute once testnet faucet limits are resolved.
+
+### Vision
+AgentZero is the foundation for a new kind of AI — one that owns its identity, memory, and intelligence on decentralized infrastructure. No company controls it. No server can delete it. The user owns it completely.
